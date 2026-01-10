@@ -20,4 +20,12 @@
       </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Components\UI\" />
+    </ItemGroup>
+
+    <Target Name="Build Tailwind CSS" BeforeTargets="Build">
+        <Exec Command="npm run tailwindcss:build"/>
+    </Target>
+
 </Project>

@@ -1,7 +1,20 @@
 ﻿@page "/"
+@using Domain.Ports
+@inject IGymClient GymClient
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Gym Dashboard</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="flex flex-col items-center gap-2">
+    <div>Available Slots</div> 
+    <div>@_availability</div>
+</div>
 
-Welcome to your new app.
+
+@code {
+    private int? _availability;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _availability = await GymClient.GetCurrentAvailability();
+    }
+}

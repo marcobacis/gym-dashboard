@@ -4,3 +4,5 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 data
+WebApp/wwwroot/css/tailwind.css
+WebApp/node_modules

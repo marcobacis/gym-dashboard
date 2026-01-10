@@ -26,7 +26,7 @@ public sealed class GymApiTokenService
 
     public async Task<AuthToken?> GetAccessTokenAsync(CancellationToken cancellationToken)
     {
-        if (_current != null && IsExpired(_current))
+        if (_current != null && IsExpired())
             await RefreshAsync(_current.RefreshToken, cancellationToken);
 
         if (_current is null)
