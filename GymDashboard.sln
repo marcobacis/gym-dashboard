@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{DEDCCD52-A4F8-4212-97B7-734772C2C419}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Persistence\Persistence.csproj", "{41499F97-4FCC-4F67-B976-04BC90C6C3DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "WebApp\WebApp.csproj", "{9E76A7C5-7C63-4294-A974-256104198D37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymClient", "GymClient\GymClient.csproj", "{1EAF3366-A1EF-468D-9ED7-2236F9DFB34A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DEDCCD52-A4F8-4212-97B7-734772C2C419}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEDCCD52-A4F8-4212-97B7-734772C2C419}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEDCCD52-A4F8-4212-97B7-734772C2C419}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEDCCD52-A4F8-4212-97B7-734772C2C419}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41499F97-4FCC-4F67-B976-04BC90C6C3DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41499F97-4FCC-4F67-B976-04BC90C6C3DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41499F97-4FCC-4F67-B976-04BC90C6C3DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41499F97-4FCC-4F67-B976-04BC90C6C3DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E76A7C5-7C63-4294-A974-256104198D37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E76A7C5-7C63-4294-A974-256104198D37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E76A7C5-7C63-4294-A974-256104198D37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E76A7C5-7C63-4294-A974-256104198D37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EAF3366-A1EF-468D-9ED7-2236F9DFB34A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EAF3366-A1EF-468D-9ED7-2236F9DFB34A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EAF3366-A1EF-468D-9ED7-2236F9DFB34A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EAF3366-A1EF-468D-9ED7-2236F9DFB34A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+EndGlobal

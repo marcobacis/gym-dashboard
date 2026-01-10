@@ -1,0 +1,23 @@
+name: gym-dashboard-webapp
+
+services:
+  database:
+    image: postgres:18.1
+    environment:
+      POSTGRES_DB: gym-dashboard
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_pwd
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./data/database:/var/opt/postgresql/data
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d gym-dashboard" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  gym_dashboard_network:
+    name: gym_dashboard_network
