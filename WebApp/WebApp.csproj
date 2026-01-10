@@ -24,7 +24,15 @@
       <Folder Include="Components\UI\" />
     </ItemGroup>
 
-    <Target Name="Build Tailwind CSS" BeforeTargets="Build">
+    <ItemGroup>
+      <Content Update="appsettings.Production.json">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
+    <Target Name="Build Tailwind CSS" BeforeTargets="Build" Condition="'$(DisableBuildTailwind)' != 'true'">
         <Exec Command="npm run tailwindcss:build"/>
     </Target>
 

@@ -4,6 +4,9 @@ using WebApp.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add configuration from environment variables
+builder.Configuration.AddEnvironmentVariables();
+
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddPersistenceModule();
 builder.Services.AddGymApiModule();

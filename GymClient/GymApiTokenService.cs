@@ -37,10 +37,11 @@ public sealed class GymApiTokenService
 
     private async Task AuthenticateAsync(string email, string password, CancellationToken cancellationToken)
     {
-        Console.WriteLine("Authenticating ...");
+        var requestBody = new { email, password };
+        
         var response = await _http.PostAsJsonAsync(
             "authenticate",
-            new { email, password }, cancellationToken);
+            requestBody, cancellationToken);
         response.EnsureSuccessStatusCode();
         
         _current = await response.Content.ReadFromJsonAsync<LoginResponse>(cancellationToken);
@@ -49,7 +50,6 @@ public sealed class GymApiTokenService
 
     private async Task RefreshAsync(string refreshToken, CancellationToken cancellationToken)
     {
-        Console.WriteLine("Refreshing ...");
         try
         {
             var response = await _http.PostAsJsonAsync(
