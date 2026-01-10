@@ -1,7 +1,1 @@
-bin/
-obj/
-/packages/
-riderModule.iml
-/_ReSharper.Caches/
 data
-WebApp/node_modules
