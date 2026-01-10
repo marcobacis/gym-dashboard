@@ -17,6 +17,15 @@
 <body>
 <Routes/>
 <script src="@Assets["_framework/blazor.web.js"]"></script>
+<script>
+    // Auto-reload page on hot reload in development
+    if (document.location.hostname === 'localhost' || document.location.hostname === '127.0.0.1') {
+        Blazor.addEventListener('enhancedload', () => {
+            console.log('Hot reload detected, reloading page...');
+            window.location.reload();
+        });
+    }
+</script>
 </body>
 
 </html>
