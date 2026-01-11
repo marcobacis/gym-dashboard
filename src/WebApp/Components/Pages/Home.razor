@@ -1,6 +1,6 @@
 ﻿@page "/"
-@using Domain.Ports
-@inject IGymClient GymClient
+@using Domain.Application
+@inject GymAvailabilityService Service
 
 <PageTitle>Gym Dashboard</PageTitle>
 
@@ -15,6 +15,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _availability = await GymClient.GetCurrentAvailability();
+        _availability = await Service.GetCurrentAvailability(CancellationToken.None);
     }
 }

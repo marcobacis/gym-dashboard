@@ -1,6 +1,9 @@
+using Domain;
 using GymClient;
 using Persistence;
+using Quartz;
 using WebApp.Components;
+using WebApp.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,8 +11,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddDomainModule();
 builder.Services.AddPersistenceModule();
 builder.Services.AddGymApiModule();
+
+builder.Services.AddQuartz(quartz =>
+{
+    var availabilityCron = builder.Configuration.GetValue<string>("AvailabilityCollectionJob:CronExpression");
+    quartz.AddJobWithCron<AvailabilityCollectionJob>(availabilityCron!);
+});
+
+builder.Services.AddQuartzHostedService(opt =>
+{
+    opt.WaitForJobsToComplete = true;
+    opt.AwaitApplicationStarted = true;
+});
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

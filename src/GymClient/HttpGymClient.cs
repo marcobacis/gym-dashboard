@@ -5,9 +5,9 @@ namespace GymClient;
 
 public class HttpGymClient(HttpClient httpClient) : IGymClient
 {
-    public async Task<int?> GetCurrentAvailability()
+    public async Task<int?> GetCurrentAvailability(CancellationToken cancellationToken = default)
     {
-        var zonesReponse = await httpClient.GetFromJsonAsync<ZoneResponse>("zones");
+        var zonesReponse = await httpClient.GetFromJsonAsync<ZoneResponse>("zones", cancellationToken);
         return zonesReponse?.Zones.FirstOrDefault()?.AvailablePlaces;
     }
     

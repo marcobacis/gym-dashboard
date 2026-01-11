@@ -1,25 +1,6 @@
 name: gym-dashboard-webapp
 
 services:
-  
-  app:
-    build:
-      context: src
-      dockerfile: Dockerfile
-    depends_on:
-      database:
-        condition: service_healthy
-    environment:
-      ConnectionStrings__Database: "Server=database;Port=5432;Database=gym-dashboard;User ID=postgres;Password=postgres_pwd;"
-      GymClient__Username: 'marc.bacis@gmail.com'
-      GymClient__Password: 'Circu94$$HutFit'
-      ASPNETCORE_URLS: "http://+:8080"
-      ASPNETCORE_ENVIRONMENT: "Production"
-    ports:
-      - 8080:8080
-    networks:
-      - gym_dashboard_network
-  
   database:
     image: postgres:18.1
     environment:
