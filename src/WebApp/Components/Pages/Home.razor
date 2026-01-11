@@ -3,7 +3,11 @@
 @using Domain.Application
 @using ApexCharts
 @using WebApp.Components.UI
+@using WebApp.Utils
 @inject GymAvailabilityService Service
+@inject BrowserTimeProvider TimeProvider
+
+<InitializeTimeZone />
 
 <PageTitle>Gym Dashboard</PageTitle>
 
@@ -96,12 +100,12 @@
         }
 
         // Change hour from utc to local
-        var offset = DateTimeOffset.Now.Offset.TotalHours;
+        var offset = TimeProvider.LocalTimeZone.BaseUtcOffset.Hours;
         _chartData = _chartData.Select(e =>
             new AvailabilityHourResponse
             {
                 DayOfWeek = e.DayOfWeek,
-                Hour = (e.Hour + (int)offset) % 24,
+                Hour = (e.Hour + offset) % 24,
                 Seats = e.Seats
             }
         ).ToList();

@@ -5,6 +5,7 @@ using Persistence;
 using Quartz;
 using WebApp.Components;
 using WebApp.Jobs;
+using WebApp.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddApexCharts();
+builder.Services.AddBrowserTimeProvider();
+
 
 var app = builder.Build();
 
