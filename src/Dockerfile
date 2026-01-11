@@ -5,6 +5,7 @@ WORKDIR /src
 
 # Copy solution file and all project directories
 COPY ["GymDashboard.sln", "."]
+COPY ["Directory.Packages.props", "."]
 COPY ["GymClient/", "GymClient/"]
 COPY ["Domain/", "Domain/"]
 COPY ["Persistence/", "Persistence/"]
