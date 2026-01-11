@@ -95,6 +95,17 @@
             }
         }
 
+        // Change hour from utc to local
+        var offset = DateTimeOffset.Now.Offset.TotalHours;
+        _chartData = _chartData.Select(e =>
+            new AvailabilityHourResponse
+            {
+                DayOfWeek = e.DayOfWeek,
+                Hour = (e.Hour + (int)offset) % 24,
+                Seats = e.Seats
+            }
+        ).ToList();
+
         // Remove night hours (22-6)
         _chartData = _chartData.Where(e => e.Hour >= 6 && e.Hour <= 22).ToList();
 

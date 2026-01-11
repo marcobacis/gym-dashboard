@@ -33,7 +33,7 @@ public class GymAvailabilityService(
 
     public async Task RegisterCurrentAvailability(CancellationToken cancellationToken)
     {
-        var now = timeProvider.GetUtcNow().DateTime;
+        var now = timeProvider.GetUtcNow();
         var current = await gymClient.GetCurrentAvailability(cancellationToken);
 
         if (current.HasValue)
