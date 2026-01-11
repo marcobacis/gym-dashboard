@@ -1,5 +1,6 @@
 using Domain.Entities;
 using Domain.Ports;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories;
 
@@ -8,5 +9,10 @@ public class GymAvailabilityRepository(ApplicationDbContext context) : IGymAvail
     public void AddAvailabilityItem(AvailabilityItem item)
     {
         context.Set<AvailabilityItem>().Add(item);
+    }
+
+    public async Task<List<AvailabilityItem>> GetAvailabilityItems(CancellationToken cancellationToken)
+    {
+        return await context.Set<AvailabilityItem>().ToListAsync(cancellationToken);
     }
 }

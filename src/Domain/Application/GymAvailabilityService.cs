@@ -13,6 +13,23 @@ public class GymAvailabilityService(
     {
         return await gymClient.GetCurrentAvailability(cancellationToken);
     }
+    
+    public async Task<List<AvailabilityHourResponse>> GetAvailabilityMap(CancellationToken cancellationToken)
+    {
+        var items = await repository.GetAvailabilityItems(cancellationToken);
+        return items.GroupBy(a => new { a.Time.DayOfWeek, a.Time.Hour })
+            .Select(group =>
+            {
+                var seats = group.Select(g => g.AvailableSeats).Average();
+                return new AvailabilityHourResponse()
+                {
+                    DayOfWeek = group.Key.DayOfWeek,
+                    Hour = group.Key.Hour,
+                    Seats = seats,
+                };
+            })
+            .ToList();
+    }
 
     public async Task RegisterCurrentAvailability(CancellationToken cancellationToken)
     {

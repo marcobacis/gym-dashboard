@@ -11,7 +11,7 @@ public enum AvailabilityStatus
 
 public static class AvailabilityStatusExtensions
 {
-    public static AvailabilityStatus FromAvailableSeats(int availableSeats)
+    public static AvailabilityStatus ToAvailabilityStatus(this int availableSeats)
     {
         return availableSeats switch
         {

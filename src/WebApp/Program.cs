@@ -1,3 +1,4 @@
+using ApexCharts;
 using Domain;
 using GymClient;
 using Persistence;
@@ -29,6 +30,8 @@ builder.Services.AddQuartzHostedService(opt =>
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddApexCharts();
 
 var app = builder.Build();
 
