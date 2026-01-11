@@ -3,21 +3,13 @@
 @using Domain.Application
 @using ApexCharts
 @using WebApp.Components.UI
-@using WebApp.Utils
 @inject GymAvailabilityService Service
-@inject BrowserTimeProvider TimeProvider
-
-<InitializeTimeZone />
 
 <PageTitle>Gym Dashboard</PageTitle>
 
 <div class="flex flex-col items-center gap-4 p-3">
     <h1 class="text-2xl">Available Slots</h1>
 
-    <div>UTC: @(TimeProvider.GetUtcNow().ToString())</div>
-    <div>Local: @(TimeProvider.GetLocalNow().ToString())</div>
-    <div>Offset: @(TimeProvider.LocalTimeZone.BaseUtcOffset.Hours)</div>
-    
     @if (_loading)
     {
         <div class="text-xl">Loading...</div>
@@ -56,7 +48,6 @@
     private bool _loading = true;
     private int? _availability;
     private List<AvailabilityHourResponse> _chartData = new();
-    private int _offsetHours = 0;
 
     private ApexChartOptions<AvailabilityHourResponse> options = new()
     {
@@ -104,13 +95,14 @@
             }
         }
 
-        // Change hour from utc to local
-        _offsetHours = TimeProvider.LocalTimeZone.BaseUtcOffset.Hours;
+        // Gym location (for now?)
+        var timeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+            
         _chartData = _chartData.Select(e =>
             new AvailabilityHourResponse
             {
                 DayOfWeek = e.DayOfWeek,
-                Hour = (e.Hour + _offsetHours) % 24,
+                Hour = (e.Hour + timeZone.BaseUtcOffset.Hours) % 24,
                 Seats = e.Seats
             }
         ).ToList();
