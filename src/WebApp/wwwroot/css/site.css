@@ -1,3 +1,9 @@
 @import "tailwindcss";
 @config "./../../tailwind.config.js";
 
+
+.apexcharts-canvas,
+.apexcharts-inner,
+.apexcharts-svg {
+    min-height: 0 !important;
+}

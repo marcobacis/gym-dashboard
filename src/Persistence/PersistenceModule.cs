@@ -12,16 +12,14 @@ public static class PersistenceModule
     {
         services.AddOptionsWithValidateOnStart<AppDbContextOptions>().BindConfiguration(AppDbContextOptions.SectionName);
         
-        services.AddDbContextPool<ApplicationDbContext>((serviceProvider, options) =>
+        services.AddPooledDbContextFactory<ApplicationDbContext>((serviceProvider, options) =>
         {
             var dbOptions = serviceProvider.GetRequiredService<IOptions<AppDbContextOptions>>().Value;
             options.UseNpgsql(dbOptions.Database);
         });
         
-        services.AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<ApplicationDbContext>());
+        services.AddScoped<IUnitOfWorkFactory, UnitOfWorkFactory>();
         
-        services.AddScoped<IGymAvailabilityRepository, GymAvailabilityRepository>();
-
         return services;
     }
 }

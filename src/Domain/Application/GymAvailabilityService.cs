@@ -4,19 +4,21 @@ using Domain.Ports;
 namespace Domain.Application;
 
 public class GymAvailabilityService(
-    IGymAvailabilityRepository repository,
-    IUnitOfWork unitOfWork,
+    IUnitOfWorkFactory unitOfWorkFactory,
     IGymClient gymClient,
     TimeProvider timeProvider) : IApplicationService
 {
-    public async Task<int?> GetCurrentAvailability(CancellationToken cancellationToken)
+    public async Task<int?> GetLatestAvailability(CancellationToken cancellationToken)
     {
-        return await gymClient.GetCurrentAvailability(cancellationToken);
+        var unitOfWork = unitOfWorkFactory.Create();
+        var item = await unitOfWork.Availability.GetLatestAvailabilityItem(cancellationToken);
+        return item?.AvailableSeats;
     }
     
-    public async Task<List<AvailabilityHourResponse>> GetAvailabilityMap(CancellationToken cancellationToken)
+    public async Task<List<AvailabilityHourResponse>> GetAvailabilityByByHour(CancellationToken cancellationToken)
     {
-        var items = await repository.GetAvailabilityItems(cancellationToken);
+        var unitOfWork = unitOfWorkFactory.Create();
+        var items = await unitOfWork.Availability.GetAvailabilityItems(cancellationToken);
         return items.GroupBy(a => new { a.Time.DayOfWeek, a.Time.Hour })
             .Select(group =>
             {
@@ -31,8 +33,23 @@ public class GymAvailabilityService(
             .ToList();
     }
 
+    public async Task<List<AvailabilityItemResponse>> GetAvailabilityItems(DateTime? startDate, DateTime? endDate,
+        CancellationToken cancellationToken)
+    {
+        var unitOfWork = unitOfWorkFactory.Create();
+        var items = await unitOfWork.Availability.GetAvailabilityItems(cancellationToken);
+        if (startDate.HasValue)
+            items = items.Where(i => i.Time.Date >= startDate.Value.Date).ToList();
+        
+        if (endDate.HasValue)
+            items = items.Where(i => i.Time.Date <= endDate.Value.Date).ToList();
+        
+        return items.Select(i => i.ToResponse()).ToList();
+    }
+
     public async Task RegisterCurrentAvailability(CancellationToken cancellationToken)
     {
+        var unitOfWork = unitOfWorkFactory.Create();
         var now = timeProvider.GetUtcNow();
         var current = await gymClient.GetCurrentAvailability(cancellationToken);
 
@@ -43,7 +60,7 @@ public class GymAvailabilityService(
                 AvailableSeats = current.Value,
                 Time = now
             };
-            repository.AddAvailabilityItem(item);
+            unitOfWork.Availability.AddAvailabilityItem(item);
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }

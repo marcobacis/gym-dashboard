@@ -1,0 +1,28 @@
+@using Domain.Application
+@using WebApp.Components.UI
+@inject GymAvailabilityService Service
+
+<h1 class="text-2xl">Available Slots</h1>
+
+@if (_loading)
+{
+    <div class="text-xl">Loading...</div>
+}
+else
+{
+    <div class="p-3 w-20 text-center rounded text-xl"
+         style="background-color: @(AvailabilityStatusColor.GetColorForAvailability((double)_availability.Value))">
+        @_availability.Value
+    </div>
+}
+
+@code {
+    private int? _availability;
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _availability = await Service.GetLatestAvailability(CancellationToken.None);
+        _loading = false;
+    }
+}

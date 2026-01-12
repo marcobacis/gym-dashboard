@@ -170,8 +170,20 @@
   .flex {
     display: flex;
   }
+  .h-\[300px\] {
+    height: 300px;
+  }
+  .h-full {
+    height: 100%;
+  }
+  .min-h-0 {
+    min-height: calc(var(--spacing) * 0);
+  }
   .w-20 {
     width: calc(var(--spacing) * 20);
+  }
+  .w-full {
+    width: 100%;
   }
   .flex-col {
     flex-direction: column;
@@ -199,4 +211,7 @@
     font-size: var(--text-xl);
     line-height: var(--tw-leading, var(--text-xl--line-height));
   }
+}
+.apexcharts-canvas, .apexcharts-inner, .apexcharts-svg {
+  min-height: 0 !important;
 }

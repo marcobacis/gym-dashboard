@@ -1,0 +1,74 @@
+@using ApexCharts
+@using Domain.Application
+<div class="w-full h-[300px]">
+    <ApexChart TItem="AvailabilityItemResponse" Title="Today" Height="@("100%")" Options="_options">
+        <ApexPointSeries
+            TItem="AvailabilityItemResponse"
+            Items="_chartData"
+            Name="Available Seats"
+            SeriesType="SeriesType.Line"
+            XValue="@(e => e.Time.ToLocalTime())"
+            YValue="@(e => e.AvailableSeats)"
+            />
+    </ApexChart>
+</div>
+
+@code {
+
+    [Inject]
+    protected GymAvailabilityService Service { get; set; }
+    
+    [Inject]
+    protected TimeProvider TimeProvider { get; set; }
+    
+    private DateTime _todayStart;
+    private DateTime _todayEnd;
+
+    private ApexChartOptions<AvailabilityItemResponse> _options;
+    
+    private List<AvailabilityItemResponse> _chartData = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _todayStart = TimeProvider.GetUtcNow().Date;
+        _todayEnd = _todayStart.AddDays(1);
+        _chartData = await Service.GetAvailabilityItems(_todayStart, _todayEnd, CancellationToken.None);
+        
+        LoadChartOptions();
+    }
+
+    private void LoadChartOptions()
+    {
+        _options = new()
+        {
+            Tooltip = new Tooltip
+            {
+                X = new TooltipX
+                {
+                    Formatter = @"
+                        function (value) {
+                            const d = new Date(value);
+                            return d.toLocaleString(undefined, {
+                                day: '2-digit',
+                                month: 'short',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                        }
+                    "
+                }
+            },
+            Xaxis = new XAxis
+            {
+                Type = XAxisType.Datetime,
+                Min = _todayStart,
+                Max = _todayEnd,    
+                Labels = new XAxisLabels
+                {
+                    DatetimeUTC = false,
+                    Format = "HH:mm"
+                }
+            }
+        };
+    }
+}
