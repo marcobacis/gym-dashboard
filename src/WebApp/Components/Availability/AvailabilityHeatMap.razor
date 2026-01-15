@@ -81,12 +81,12 @@
             new AvailabilityHourResponse
             {
                 DayOfWeek = e.DayOfWeek,
-                Hour = (e.Hour + timeZone.BaseUtcOffset.Hours) % 24,
+                Hour = (e.Hour + timeZone.BaseUtcOffset.Hours),
                 Seats = e.Seats
             }
         ).ToList();
 
         // Remove night hours (22-6)
-        _chartData = _chartData.Where(e => e.Hour >= 6 && e.Hour <= 22).ToList();
+        _chartData = _chartData.Where(e => e.Hour >= 5 && e.Hour <= 24).ToList();
     }
 }

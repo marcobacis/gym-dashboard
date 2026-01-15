@@ -33,16 +33,16 @@ public class GymAvailabilityService(
             .ToList();
     }
 
-    public async Task<List<AvailabilityItemResponse>> GetAvailabilityItems(DateTime? startDate, DateTime? endDate,
+    public async Task<List<AvailabilityItemResponse>> GetAvailabilityItems(DateTime? startTime, DateTime? endTime,
         CancellationToken cancellationToken)
     {
         var unitOfWork = unitOfWorkFactory.Create();
         var items = await unitOfWork.Availability.GetAvailabilityItems(cancellationToken);
-        if (startDate.HasValue)
-            items = items.Where(i => i.Time.Date >= startDate.Value.Date).ToList();
+        if (startTime.HasValue)
+            items = items.Where(i => i.Time >= startTime.Value).ToList();
         
-        if (endDate.HasValue)
-            items = items.Where(i => i.Time.Date <= endDate.Value.Date).ToList();
+        if (endTime.HasValue)
+            items = items.Where(i => i.Time <= endTime.Value).ToList();
         
         return items.Select(i => i.ToResponse()).ToList();
     }

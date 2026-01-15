@@ -4,7 +4,7 @@ public class AvailabilityItemResponse
 {
     public DateTimeOffset Time { get; set; }
     
-    public int AvailableSeats { get; set; }
+    public int? AvailableSeats { get; set; }
 }
 
 public static class AvailabilityItemResponseExtensions
