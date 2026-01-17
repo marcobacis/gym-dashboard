@@ -1,8 +1,6 @@
 ﻿@page "/"
-@using System.Security.Cryptography
 @using Domain.Application
 @using Domain.Application.Dtos
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using WebApp.Components.Availability
 @rendermode InteractiveServer
 
@@ -39,11 +37,11 @@
 
 @code {
     [Inject] protected GymAvailabilityQueryService QueryService { get; set; }
-    [Inject] protected ProtectedLocalStorage ProtectedLocalStorage { get; set; }
+    [Inject] protected ILocalStorageService LocalStorage { get; set; }
 
     public Guid? GymId { get; set; } = null;
     private GymResponse? Gym = null;
-    
+
     public List<GymItem> Gyms { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
@@ -55,29 +53,20 @@
     {
         if (!firstRender)
             return;
+        
+        var gymId = await LocalStorage.GetItemAsync<Guid?>("gymId");
 
-        try
-        {
-            var storedGymId = await ProtectedLocalStorage.GetAsync<Guid>("gymId");
-
-            if (storedGymId.Success)
-            {
-                await OnGymChanged(storedGymId.Value);
-            }
-        }
-        catch (CryptographicException)
-        {
-            await ProtectedLocalStorage.DeleteAsync("gymId");
-        }
+        if (gymId.HasValue)
+            await OnGymChanged(gymId.Value);
     }
 
     private async Task OnGymChanged(Guid? gymId)
     {
         if (!gymId.HasValue)
             return;
-        
+
         GymId = gymId;
-        await ProtectedLocalStorage.SetAsync("gymId", gymId);
+        await LocalStorage.SetItemAsync("gymId", gymId.Value);
         Gym = await QueryService.GetGymById(GymId.Value, CancellationToken.None);
         StateHasChanged();
     }

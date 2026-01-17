@@ -31,6 +31,7 @@ builder.Services.AddQuartzHostedService(opt =>
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddLocalStorageServices();
 builder.Services.AddApexCharts();
 
 var app = builder.Build();
