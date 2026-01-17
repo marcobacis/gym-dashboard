@@ -79,6 +79,16 @@
         _chartData = await QueryService.GetAvailabilityItems(GymId, _todayStart, _todayEnd, CancellationToken.None);
         
         // Ensure chart covers full day
+        if (_chartData.Count == 0 || _chartData.Min(x => x.Time) > _todayStart)
+        {
+            _chartData = _chartData
+                .Append(new AvailabilityItemResponse
+                {
+                    Time = _todayStart,
+                    AvailableSeats = null
+                })
+                .ToList();
+        }
         if (_chartData.Count == 0 || _chartData.Max(x => x.Time) < _todayEnd)
         {
             _chartData = _chartData
@@ -130,11 +140,21 @@
                 Type = XAxisType.Datetime,
                 Min = _todayStart,
                 Max = _todayEnd,
+                TickAmount = 24,
                 Labels = new XAxisLabels
                 {
                     ShowDuplicates = false,
                     DatetimeUTC = true,
-                    Format = "HH:mm"
+                    Formatter = @"
+                        function (value) {
+                            const d = new Date(value);
+                            return d.toLocaleString(undefined, {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false
+                            });
+                        }
+                    "
                 }
             }
         };
