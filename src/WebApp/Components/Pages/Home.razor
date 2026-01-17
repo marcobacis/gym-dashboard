@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using System.Security.Cryptography
 @using Domain.Application
 @using Domain.Application.Dtos
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
@@ -55,11 +56,18 @@
         if (!firstRender)
             return;
 
-        var storedGymId = await ProtectedLocalStorage.GetAsync<Guid>("gymId");
-
-        if (storedGymId.Success)
+        try
         {
-            await OnGymChanged(storedGymId.Value);
+            var storedGymId = await ProtectedLocalStorage.GetAsync<Guid>("gymId");
+
+            if (storedGymId.Success)
+            {
+                await OnGymChanged(storedGymId.Value);
+            }
+        }
+        catch (CryptographicException)
+        {
+            await ProtectedLocalStorage.DeleteAsync("gymId");
         }
     }
 
