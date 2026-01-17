@@ -24,8 +24,8 @@ public class GymAvailabilityQueryService(IUnitOfWorkFactory unitOfWorkFactory) :
         {
             Id = gym.Id,
             Name = gym.Name,
-            MinAvailability = availabilityItems.Select(i => i.AvailableSeats).Min(),
-            MaxAvailability = availabilityItems.Select(i => i.AvailableSeats).Max(),
+            MinAvailability = availabilityItems.Count > 0 ? availabilityItems.Select(i => i.AvailableSeats).Min() : 0,
+            MaxAvailability = availabilityItems.Count > 0 ? availabilityItems.Select(i => i.AvailableSeats).Max() : 100,
         };
     }
     
