@@ -23,6 +23,7 @@ public class GymAvailabilityRepository(ApplicationDbContext context) : IGymAvail
     {
         return await context.Set<AvailabilityItem>()
             .Where(i => i.GymId == gymId)
+            .OrderBy(item => item.Time)
             .ToListAsync(cancellationToken);
     }
 }
