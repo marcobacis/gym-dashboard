@@ -6,7 +6,7 @@ public interface IGymAvailabilityRepository
 {
     public void AddAvailabilityItem(AvailabilityItem item);
     
-    public Task<AvailabilityItem?> GetLatestAvailabilityItem(CancellationToken cancellationToken);
+    public Task<AvailabilityItem?> GetLatestAvailabilityItem(Guid gymId, CancellationToken cancellationToken);
     
-    public Task<List<AvailabilityItem>> GetAvailabilityItems(CancellationToken cancellationToken);
+    public Task<List<AvailabilityItem>> GetAvailabilityItems(Guid gymId, CancellationToken cancellationToken);
 }

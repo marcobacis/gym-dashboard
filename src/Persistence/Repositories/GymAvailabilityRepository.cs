@@ -11,15 +11,18 @@ public class GymAvailabilityRepository(ApplicationDbContext context) : IGymAvail
         context.Set<AvailabilityItem>().Add(item);
     }
 
-    public async Task<AvailabilityItem?> GetLatestAvailabilityItem(CancellationToken cancellationToken)
+    public async Task<AvailabilityItem?> GetLatestAvailabilityItem(Guid gymId, CancellationToken cancellationToken)
     {
         return await context.Set<AvailabilityItem>()
+            .Where(i => i.GymId == gymId)
             .OrderByDescending(item => item.Time)
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<List<AvailabilityItem>> GetAvailabilityItems(CancellationToken cancellationToken)
+    public async Task<List<AvailabilityItem>> GetAvailabilityItems(Guid gymId, CancellationToken cancellationToken)
     {
-        return await context.Set<AvailabilityItem>().ToListAsync(cancellationToken);
+        return await context.Set<AvailabilityItem>()
+            .Where(i => i.GymId == gymId)
+            .ToListAsync(cancellationToken);
     }
 }

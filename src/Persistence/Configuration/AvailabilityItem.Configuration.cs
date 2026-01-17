@@ -9,6 +9,9 @@ public class AvailabilityItemConfiguration : IEntityTypeConfiguration<Availabili
     public void Configure(EntityTypeBuilder<AvailabilityItem> builder)
     {
         builder.ToTable(nameof(AvailabilityItem));
-        builder.HasKey(e => e.Time);
+        builder.HasKey(e => e.Id);
+        builder.Property(e => e.Id).HasDefaultValueSql("uuidv7()");
+        
+        builder.HasOne(e => e.Gym).WithMany().HasForeignKey(i => i.GymId);
     }
 }

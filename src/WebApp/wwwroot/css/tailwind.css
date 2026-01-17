@@ -184,6 +184,9 @@
   .h-full {
     height: 100%;
   }
+  .min-h-full {
+    min-height: 100%;
+  }
   .w-20 {
     width: calc(var(--spacing) * 20);
   }

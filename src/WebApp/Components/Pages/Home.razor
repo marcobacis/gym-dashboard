@@ -1,13 +1,42 @@
 ﻿@page "/"
 @using Domain.Application
 @using WebApp.Components.Availability
+@using WebApp.Dtos
 @rendermode InteractiveServer
-@inject GymAvailabilityService Service
+@inject GymAvailabilityWriteService WriteService
 
 <PageTitle>Gym Dashboard</PageTitle>
 
 <div class="flex flex-col items-center gap-4 p-3 h-full">
-    <CurrentAvailabilityIndicator />
-    <div class="w-full"><AvailabilityHeatMap/></div>
-    <div class="w-full"><AvailabilityLineChart/></div>
+    
+    <div class="@(GymId == null ? "w-full h-full flex justify-center items-center" : "")">
+        <InputSelect TValue="Guid?" @bind-Value="GymId">
+            <option selected="@(GymId == null)">Select a gym...</option>
+            @foreach (var item in Gyms)
+            {
+                <option value="@item.Id" selected="@(item.Id == GymId)">@item.Name</option>
+            }
+        </InputSelect>
+
+    </div>
+
+        @if (GymId.HasValue)
+    {
+        <CurrentAvailabilityIndicator GymId="GymId.Value"/>
+        <div class="w-full"><AvailabilityHeatMap GymId="GymId.Value"/></div>
+        <div class="w-full"><AvailabilityLineChart GymId="GymId.Value"/></div>
+    }
 </div>
+
+
+@code {
+    [Inject] protected GymAvailabilityQueryService QueryService { get; set; }
+    
+    public Guid? GymId { get; set; } = null;
+    public List<GymItem> Gyms { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Gyms = (await QueryService.GetGyms(CancellationToken.None)).Select(GymItem.FromDomain).ToList();
+    }
+}

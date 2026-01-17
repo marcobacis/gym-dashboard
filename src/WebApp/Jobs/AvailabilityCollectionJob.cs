@@ -3,10 +3,10 @@ using Quartz;
 
 namespace WebApp.Jobs;
 
-public class AvailabilityCollectionJob(GymAvailabilityService gymAvailabilityService) : IJob
+public class AvailabilityCollectionJob(GymAvailabilityWriteService gymAvailabilityWriteService) : IJob
 {
     public async Task Execute(IJobExecutionContext context)
     {
-        await gymAvailabilityService.RegisterCurrentAvailability(context.CancellationToken);
+        await gymAvailabilityWriteService.RegisterCurrentAvailability(context.CancellationToken);
     }
 }

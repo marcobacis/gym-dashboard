@@ -24,11 +24,12 @@
 </div>
 
 @code {
+    private Guid _lastGymId;
+    [Parameter] public Guid GymId { get; set; }
 
-    [Inject] protected GymAvailabilityService Service { get; set; }
+    [Inject] protected GymAvailabilityQueryService QueryService { get; set; }
 
     private List<AvailabilityHourResponse> _chartData = new();
-
     private readonly ApexChartOptions<AvailabilityHourResponse> _options = new()
     {
         Legend = new Legend()
@@ -51,10 +52,23 @@
             }
         }
     };
-
+    
     protected override async Task OnInitializedAsync()
     {
-        _chartData = await Service.GetAvailabilityByByHour(CancellationToken.None);
+        await LoadChart();
+    }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!GymId.Equals(_lastGymId))
+        {
+            await LoadChart();
+        }
+    }
+
+    private async Task LoadChart()
+    {
+        _chartData = await QueryService.GetAvailabilityByByHour(GymId, CancellationToken.None);
 
         // Fill in missing hours with -1 seats
         foreach (var day in Enum.GetValues<DayOfWeek>())

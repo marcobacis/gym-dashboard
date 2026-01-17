@@ -2,8 +2,6 @@
 @using ApexCharts
 @using Domain.Application
 
-
-
 <div class="w-full h-[300px] mt-3">
 
     <div class="flex items-center justify-center space-x-2 gap-2">
@@ -31,8 +29,10 @@
 </div>
 
 @code {
-
-    [Inject] protected GymAvailabilityService Service { get; set; }
+    [Parameter] public Guid GymId { get; set; }
+    private Guid _lastGymId;
+    
+    [Inject] protected GymAvailabilityQueryService QueryService { get; set; }
 
     [Inject] protected TimeProvider TimeProvider { get; set; }
 
@@ -49,7 +49,15 @@
     {
         await LoadChart(TimeProvider.GetUtcNow());
     }
-
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!GymId.Equals(_lastGymId))
+        {
+            await LoadChart(TimeProvider.GetUtcNow());
+        }
+    }
+    
     private async Task LoadYesterday()
     {
         _today = _today.AddDays(-1);
@@ -68,7 +76,7 @@
         _todayStart = DateTime.SpecifyKind(date.UtcDateTime.Date, DateTimeKind.Utc);
         _todayEnd   = _todayStart.AddDays(1);
         
-        _chartData = await Service.GetAvailabilityItems(_todayStart, _todayEnd, CancellationToken.None);
+        _chartData = await QueryService.GetAvailabilityItems(GymId, _todayStart, _todayEnd, CancellationToken.None);
         
         // Ensure chart covers full day
         if (_chartData.Count == 0 || _chartData.Max(x => x.Time) < _todayEnd)

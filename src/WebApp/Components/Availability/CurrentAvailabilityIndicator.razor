@@ -1,6 +1,6 @@
 @using Domain.Application
 @using WebApp.Components.UI
-@inject GymAvailabilityService Service
+@inject GymAvailabilityQueryService QueryService
 
 <h1 class="text-2xl">Available Slots</h1>
 
@@ -17,12 +17,25 @@ else
 }
 
 @code {
+    [Parameter] public Guid GymId { get; set; }
+    private Guid _lastGymId;
+    
     private int? _availability;
     private bool _loading = true;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        _availability = await Service.GetLatestAvailability(CancellationToken.None);
+        if (GymId == _lastGymId)
+            return;
+
+        _lastGymId = GymId;
+        _loading = true;
+
+        _availability = await QueryService.GetLatestAvailability(
+            GymId,
+            CancellationToken.None
+        );
+
         _loading = false;
     }
 }
