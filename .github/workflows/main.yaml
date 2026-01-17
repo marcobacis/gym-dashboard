@@ -23,7 +23,7 @@ jobs:
         with:
           images: ghcr.io/marcobacis/gym-dashboard-webapp
           tags: |
-            type=sha,format=short  
+            type=sha,format=long  
             type=ref,event=branch
             type=ref,event=pr
 
@@ -54,4 +54,8 @@ jobs:
     steps:
       - name: Deploy to ArgoCD
         run: |
-          argocd app set gym-dashboard --helm-set image.tag=${{ needs.build-and-push.outputs.version }} --server ${{ secrets.ARGOCD_SERVER }} --auth-token ${{ secrets.ARGOCD_AUTH_TOKEN }} --grpc-web
+          argocd app set gym-dashboard \
+            --helm-set image.tag=sha-${{ github.sha }} \
+            --server ${{ secrets.ARGOCD_SERVER }} \
+            --auth-token ${{ secrets.ARGOCD_AUTH_TOKEN }} \
+            --grpc-web
