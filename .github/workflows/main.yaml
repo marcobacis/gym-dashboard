@@ -49,7 +49,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
     
   deploy:
-    runs-on: ghcr.io/argoproj/argo-cd/argocd:3.4.0-82597111
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/argoproj/argo-cd/argocd:3.4.0-82597111
     needs: build-and-push
 
     steps:
