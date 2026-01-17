@@ -1,16 +1,20 @@
 @using ApexCharts
 @using Domain.Application
-@using WebApp.Components.UI
+@using Domain.Application.Dtos
+@using Domain.Entities
+@rendermode InteractiveServer
 
 <div class="w-full h-[300px]">
-    <ApexChart TItem="AvailabilityHourResponse"
-               Options="_options"
-               Height = "@("100%")"
+    <ApexChart
+        @key="GymId"
+        TItem="AvailabilityHeatMapItemResponse"
+        Options="_options"
+        Height = "@("100%")"
     >
 
         @foreach (var day in _chartData.GroupBy(e => e.DayOfWeek).OrderByDescending(e => (int)e.Key))
         {
-            <ApexPointSeries TItem="AvailabilityHourResponse"
+            <ApexPointSeries TItem="AvailabilityHeatMapItemResponse"
                              Items="day.OrderBy(e=>e.Hour)"
                              Name="@day.Key.ToString().Substring(0, 3)"
                              SeriesType="SeriesType.Heatmap"
@@ -24,34 +28,14 @@
 </div>
 
 @code {
-    private Guid _lastGymId;
-    [Parameter] public Guid GymId { get; set; }
-
     [Inject] protected GymAvailabilityQueryService QueryService { get; set; }
+    
+    [Parameter] public Guid GymId { get; set; }
+    [Parameter] public int Max { get; set; } = 130;
+    [Parameter] public int Min { get; set; } = 0;
 
-    private List<AvailabilityHourResponse> _chartData = new();
-    private readonly ApexChartOptions<AvailabilityHourResponse> _options = new()
-    {
-        Legend = new Legend()
-        {
-            Show = false,
-        },
-        PlotOptions = new PlotOptions
-        {
-            Heatmap = new PlotOptionsHeatmap
-            {
-                EnableShades = true,
-                ShadeIntensity = 0.7,
-                ColorScale = new PlotOptionsHeatmapColorScale
-                {
-                    Min = 0,
-                    Max = 130,
-                    Inverse = false,
-                    Ranges = AvailabilityStatusColor.GetHeatMapRanges()
-                }
-            }
-        }
-    };
+    private List<AvailabilityHeatMapItemResponse> _chartData = new();
+    private ApexChartOptions<AvailabilityHeatMapItemResponse> _options = new(); 
     
     protected override async Task OnInitializedAsync()
     {
@@ -60,16 +44,13 @@
     
     protected override async Task OnParametersSetAsync()
     {
-        if (!GymId.Equals(_lastGymId))
-        {
-            await LoadChart();
-        }
+        await LoadChart();
     }
 
     private async Task LoadChart()
     {
         _chartData = await QueryService.GetAvailabilityByByHour(GymId, CancellationToken.None);
-
+        
         // Fill in missing hours with -1 seats
         foreach (var day in Enum.GetValues<DayOfWeek>())
         {
@@ -78,7 +59,7 @@
                 var exist = _chartData.Any(e => e.DayOfWeek == day && e.Hour == hour);
                 if (!exist)
                 {
-                    _chartData.Add(new AvailabilityHourResponse
+                    _chartData.Add(new AvailabilityHeatMapItemResponse
                     {
                         DayOfWeek = day,
                         Hour = hour,
@@ -92,7 +73,7 @@
         var timeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             
         _chartData = _chartData.Select(e =>
-            new AvailabilityHourResponse
+            new AvailabilityHeatMapItemResponse
             {
                 DayOfWeek = e.DayOfWeek,
                 Hour = (e.Hour + timeZone.BaseUtcOffset.Hours),
@@ -102,5 +83,35 @@
 
         // Remove night hours (22-6)
         _chartData = _chartData.Where(e => e.Hour >= 5 && e.Hour <= 24).ToList();
+        
+        LoadOptions();
+        
+        StateHasChanged();
+    }
+
+    private void LoadOptions()
+    {
+        _options = new()
+        {
+            Legend = new Legend()
+            {
+                Show = false,
+            },
+            PlotOptions = new PlotOptions
+            {
+                Heatmap = new PlotOptionsHeatmap
+                {
+                    EnableShades = true,
+                    ShadeIntensity = 0.7,
+                    ColorScale = new PlotOptionsHeatmapColorScale
+                    {
+                        Min = Min,
+                        Max = Max,
+                        Inverse = false,
+                        Ranges = AvailabilityStatusColor.GetHeatMapRanges(Min, Max)
+                    }
+                }
+            }
+        };
     }
 }

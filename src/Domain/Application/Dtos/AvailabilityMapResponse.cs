@@ -1,8 +1,6 @@
-using Domain.Entities;
+namespace Domain.Application.Dtos;
 
-namespace Domain.Application;
-
-public class AvailabilityHourResponse
+public class AvailabilityHeatMapItemResponse
 {
     public DayOfWeek DayOfWeek { get; set; }
     

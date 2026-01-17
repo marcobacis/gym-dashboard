@@ -1,6 +1,7 @@
 @rendermode InteractiveServer
 @using ApexCharts
 @using Domain.Application
+@using Domain.Application.Dtos
 
 <div class="w-full h-[300px] mt-3">
 
@@ -9,8 +10,10 @@
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             &lt;
         </button>
-    <InputDate TValue="DateTimeOffset" @bind-Value:get="_today" @bind-Value:set="LoadChart"></InputDate>
-        <button @onclick="() => LoadTomorrow()"
+        
+        <InputDate TValue="DateTimeOffset" @bind-Value:get="_today" @bind-Value:set="LoadChart"></InputDate>
+        
+        <button @onclick="() => LoadTomorrow()" disabled="@(_today.Date >= TimeProvider.GetUtcNow().Date)"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             &gt;
         </button>
@@ -29,12 +32,12 @@
 </div>
 
 @code {
-    [Parameter] public Guid GymId { get; set; }
-    private Guid _lastGymId;
-    
     [Inject] protected GymAvailabilityQueryService QueryService { get; set; }
-
     [Inject] protected TimeProvider TimeProvider { get; set; }
+    
+    [Parameter] public Guid GymId { get; set; }
+    [Parameter] public int Max { get; set; } = 130;
+    [Parameter] public int Min { get; set; } = 0;
 
     private DateTimeOffset _today = DateTimeOffset.Now;
 
@@ -52,10 +55,7 @@
     
     protected override async Task OnParametersSetAsync()
     {
-        if (!GymId.Equals(_lastGymId))
-        {
-            await LoadChart(TimeProvider.GetUtcNow());
-        }
+        await LoadChart(TimeProvider.GetUtcNow());
     }
     
     private async Task LoadYesterday()
@@ -121,9 +121,8 @@
             {
                 new()
                 {
-                    Min = 0,
-                    Max = 130,
-                    TickAmount = 13,
+                    Min = Min,
+                    Max = Max,
                 }
             },
             Xaxis = new XAxis

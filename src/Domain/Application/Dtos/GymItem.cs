@@ -1,6 +1,6 @@
 using Domain.Entities;
 
-namespace WebApp.Dtos;
+namespace Domain.Application.Dtos;
 
 public class GymItem
 {

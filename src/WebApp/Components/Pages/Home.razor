@@ -1,17 +1,20 @@
 ﻿@page "/"
 @using Domain.Application
+@using Domain.Application.Dtos
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using WebApp.Components.Availability
-@using WebApp.Dtos
 @rendermode InteractiveServer
-@inject GymAvailabilityWriteService WriteService
 
 <PageTitle>Gym Dashboard</PageTitle>
 
 <div class="flex flex-col items-center gap-4 p-3 h-full">
-    
+
     <div class="@(GymId == null ? "w-full h-full flex justify-center items-center" : "")">
-        <InputSelect TValue="Guid?" @bind-Value="GymId">
-            <option selected="@(GymId == null)">Select a gym...</option>
+        <InputSelect TValue="Guid?" @bind-Value:get="GymId" @bind-Value:set="OnGymChanged">
+            @if (GymId == null)
+            {
+                <option selected="@(GymId == null)">Select a gym...</option>
+            }
             @foreach (var item in Gyms)
             {
                 <option value="@item.Id" selected="@(item.Id == GymId)">@item.Name</option>
@@ -20,23 +23,54 @@
 
     </div>
 
-        @if (GymId.HasValue)
+    @if (Gym != null)
     {
-        <CurrentAvailabilityIndicator GymId="GymId.Value"/>
-        <div class="w-full"><AvailabilityHeatMap GymId="GymId.Value"/></div>
-        <div class="w-full"><AvailabilityLineChart GymId="GymId.Value"/></div>
+        <CurrentAvailabilityIndicator GymId="Gym.Id" Min="Gym.MinAvailability" Max="Gym.MaxAvailability"/>
+        <div class="w-full">
+            <AvailabilityHeatMap GymId="Gym.Id" Min="Gym.MinAvailability" Max="Gym.MaxAvailability"/>
+        </div>
+        <div class="w-full">
+            <AvailabilityLineChart GymId="Gym.Id" Min="Gym.MinAvailability" Max="Gym.MaxAvailability"/>
+        </div>
     }
 </div>
 
 
 @code {
     [Inject] protected GymAvailabilityQueryService QueryService { get; set; }
-    
+    [Inject] protected ProtectedLocalStorage ProtectedLocalStorage { get; set; }
+
     public Guid? GymId { get; set; } = null;
+    private GymResponse? Gym = null;
+    
     public List<GymItem> Gyms { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         Gyms = (await QueryService.GetGyms(CancellationToken.None)).Select(GymItem.FromDomain).ToList();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        var storedGymId = await ProtectedLocalStorage.GetAsync<Guid>("gymId");
+
+        if (storedGymId.Success)
+        {
+            await OnGymChanged(storedGymId.Value);
+        }
+    }
+
+    private async Task OnGymChanged(Guid? gymId)
+    {
+        if (!gymId.HasValue)
+            return;
+        
+        GymId = gymId;
+        await ProtectedLocalStorage.SetAsync("gymId", gymId);
+        Gym = await QueryService.GetGymById(GymId.Value, CancellationToken.None);
+        StateHasChanged();
     }
 }

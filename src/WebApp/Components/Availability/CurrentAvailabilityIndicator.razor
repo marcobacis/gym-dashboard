@@ -1,5 +1,4 @@
 @using Domain.Application
-@using WebApp.Components.UI
 @inject GymAvailabilityQueryService QueryService
 
 <h1 class="text-2xl">Available Slots</h1>
@@ -11,24 +10,21 @@
 else
 {
     <div class="p-3 w-20 text-center rounded text-xl"
-         style="background-color: @(AvailabilityStatusColor.GetColorForAvailability((double)_availability.Value))">
+         style="background-color: @(AvailabilityStatusColor.GetColorForAvailability(_availability.Value / (Max-Min)))">
         @_availability.Value
     </div>
 }
 
 @code {
     [Parameter] public Guid GymId { get; set; }
-    private Guid _lastGymId;
+    [Parameter] public int Max { get; set; } = 130;
+    [Parameter] public int Min { get; set; } = 0;
     
     private int? _availability;
     private bool _loading = true;
 
     protected override async Task OnParametersSetAsync()
     {
-        if (GymId == _lastGymId)
-            return;
-
-        _lastGymId = GymId;
         _loading = true;
 
         _availability = await QueryService.GetLatestAvailability(

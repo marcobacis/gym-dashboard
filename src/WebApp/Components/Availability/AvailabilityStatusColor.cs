@@ -1,20 +1,20 @@
 using ApexCharts;
 
-namespace WebApp.Components.UI;
+namespace WebApp.Components.Availability;
 
-public class AvailabilityStatusColor
+public static class AvailabilityStatusColor
 {
-    private const double MaxSeats = 128.0;
-    
     private static readonly List<(double, string)> Ranges = new()
     {
-        (30 / MaxSeats, "#FF0000"),    // Red
-        (80 / MaxSeats, "#FFA500"),   // Orange
+        (0.3, "#FF0000"),    // Red
+        (0.8, "#FFA500"),   // Orange
         (1, "#00FF00")     // Green
     };
 
-    public static List<PlotOptionsHeatmapColorScaleRange> GetHeatMapRanges()
+    public static List<PlotOptionsHeatmapColorScaleRange> GetHeatMapRanges(int min, int max)
     {
+        
+        var totalRange = Math.Abs(max - min);
         var ranges = new List<PlotOptionsHeatmapColorScaleRange>();
 
         ranges.Add(new PlotOptionsHeatmapColorScaleRange
@@ -23,13 +23,13 @@ public class AvailabilityStatusColor
             To = -1,
             Color = "#FFFFFF"
         });
-        for (int i = 0; i < 130; i += 5)
+        for (int i = min; i < min + totalRange; i += 5)
         {
             ranges.Add(new PlotOptionsHeatmapColorScaleRange
             {
                 From = i,
                 To = i + 5,
-                Color = AvailabilityStatusColor.GetColorForAvailability(i)
+                Color = GetColorForAvailability((double)i / totalRange)
             });
         }
 
@@ -37,9 +37,9 @@ public class AvailabilityStatusColor
     }
     
 
-    public static string GetColorForAvailability(double seats)
+    public static string GetColorForAvailability(double seatsPercentage)
     {
-        double t = Math.Clamp(seats / MaxSeats, 0.0, 1.0);
+        double t = Math.Clamp(seatsPercentage, 0.0, 1.0);
         return InterpolateColor(t);
     }
     
