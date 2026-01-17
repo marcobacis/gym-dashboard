@@ -29,7 +29,7 @@ public static class AvailabilityStatusColor
             {
                 From = i,
                 To = i + 5,
-                Color = GetColorForAvailability((double)i / totalRange)
+                Color = GetColorForAvailability((double)(i - min) / totalRange)
             });
         }
 
