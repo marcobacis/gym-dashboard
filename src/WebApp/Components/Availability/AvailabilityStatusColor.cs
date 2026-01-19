@@ -6,9 +6,9 @@ public static class AvailabilityStatusColor
 {
     private static readonly List<(double, string)> Ranges = new()
     {
-        (0.3, "#FF0000"),    // Red
-        (0.8, "#FFA500"),   // Orange
-        (1, "#00FF00")     // Green
+        (0.2, "#FF0000"),    // Red
+        (0.4, "#FFA500"),   // Orange
+        (0.9, "#00FF00")     // Green
     };
 
     public static List<PlotOptionsHeatmapColorScaleRange> GetHeatMapRanges(int min, int max)

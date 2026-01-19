@@ -10,7 +10,7 @@
 else
 {
     <div class="p-3 w-20 text-center rounded text-xl"
-         style="background-color: @(AvailabilityStatusColor.GetColorForAvailability((_availability.Value - Min) / (Max-Min)))">
+         style="background-color: @(AvailabilityStatusColor.GetColorForAvailability(((double)_availability.Value - Min) / (Max - Min)))">
         @_availability.Value
     </div>
 }
