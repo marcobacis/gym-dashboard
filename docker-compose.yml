@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: postgres_pwd
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - ./data/database:/var/opt/postgresql/data
+      - ./data/database:/var/lib/postgresql/data
     ports:
       - 5432:5432
     healthcheck:
