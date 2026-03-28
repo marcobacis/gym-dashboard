@@ -5,6 +5,7 @@
   <ItemGroup>
     <PackageVersion Include="Blazor-ApexCharts" Version="6.0.2" />
     <PackageVersion Include="Blazor.LocalStorage" Version="9.0.1" />
+    <PackageVersion Include="EntityFrameworkCore.DataEncryption" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.1" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
