@@ -44,18 +44,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-    
-  deploy:
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/argoproj/argo-cd/argocd:3.4.0-82597111
-    needs: build-and-push
-
-    steps:
-      - name: Deploy to ArgoCD
-        run: |
-          argocd app set gym-dashboard \
-            --helm-set image.tag=sha-${{ github.sha }} \
-            --server ${{ secrets.ARGOCD_SERVER }} \
-            --auth-token ${{ secrets.ARGOCD_AUTH_TOKEN }} \
-            --grpc-web
