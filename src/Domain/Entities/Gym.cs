@@ -11,4 +11,6 @@ public class Gym
     public string Password { get; set; } = string.Empty;
     
     public string ApiPrefix { get; set; } = string.Empty;
+    
+    public bool CollectEnabled { get; set; } = true;
 }

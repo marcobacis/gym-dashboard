@@ -13,7 +13,7 @@ public class GymAvailabilityWriteService(IUnitOfWorkFactory unitOfWorkFactory,
         var unitOfWork = unitOfWorkFactory.Create();
         var now = timeProvider.GetUtcNow();
         
-        var gyms = await unitOfWork.Gyms.GetGyms(cancellationToken);
+        var gyms = await unitOfWork.Gyms.GetGymsForCollection(cancellationToken);
 
         foreach (var gym in gyms)
         {
